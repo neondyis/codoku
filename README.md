@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+## Coduku 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Multiplayer sudoku to play together with friends and solve.
 
 ## Available Scripts
 
