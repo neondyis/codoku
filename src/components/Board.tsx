@@ -1,59 +1,66 @@
-import {Button, Center, Flex} from "@chakra-ui/react";
+import {Button, Center, Flex, Grid} from "@chakra-ui/react";
 import {SudokuSquare} from "./SudokuSquare";
-import {generate, removeHints} from "../utility/BoardGenerator";
-import {useSudokuContext} from "../context/SudokuContext";
-import {useEffect} from "react";
-import {solve} from "../utility/BoardSolver";
+import {useEffect, useState} from "react";
+import {useAppDispatch, useAppSelector} from "../redux/hooks";
+import {modifyGameBoard, setSolutionBoard} from "../redux/SudokuSlice";
+import {createSudokuBoardData, SudokuCreator, toMatrixStyleBoardData} from "@algorithm.ts/sudoku";
+import io from "socket.io-client";
+import {socket} from "./MainMenu";
 
 export const Board = () => {
-    const sudokuBoard = removeHints(generate(),55);
-    const {gameArray,initArray,won,setGameArray,setInitArray,setWon} = useSudokuContext();
+    const gameBoard = useAppSelector(state => state.gameArray);
+    const solutionBoard = useAppSelector(state => state.solvedArray);
+    const id = useAppSelector(state => state.id);
+    const dispatch = useAppDispatch();
+    const [gameInitiated,setGameInitiated] = useState(false);
 
     useEffect(() => {
-        setGameArray(solve(sudokuBoard));
-        setInitArray(sudokuBoard);
+        if(!gameInitiated){
+            setGameInitiated(true);
+        }
     },[])
 
 
     const compareBoard = () => {
-        let completedBoard = false;
-        for(let x = 0; x < initArray.length;x++){
-            for(let y = 0; y < initArray[x].length;y++){
-                if(initArray[x][y] === gameArray[x][y]){
-                    completedBoard = true;
-                }else{
-                   return;
-                }
-            }
-        }
-        setWon(completedBoard)
+        dispatch(modifyGameBoard(solutionBoard));
+        // setGameBoard(sudokuBoardManager.solution)
+        // let completedBoard = false;
+        // for(let x = 0; x < initArray.length;x++){
+        //     for(let y = 0; y < initArray[x].length;y++){
+        //         if(initArray[x][y] === gameArray[x][y]){
+        //             completedBoard = true;
+        //         }else{
+        //            return;
+        //         }
+        //     }
+        // }
+        // setWon(completedBoard)
+    }
+
+    const confirmTurn = () => {
+        socket.emit('playTurn', {puzzle: gameBoard});
     }
 
     return (
         <Center h='100%' w='100%'>
-            {initArray.length > 0 ?
-                <div>
-                    <Flex flexDirection='column' flexWrap='wrap'>
-                        {initArray.map((blockArray: number[], index: number) => {
+            {id}
+            {gameBoard.length > 0 ?
+                    <Grid templateRows='repeat(3, 1fr)'
+                            templateColumns='repeat(9, 1fr)'>
+                        {gameBoard.map((block: number, index: number) => {
                             return (
-                                <div key={index}>
-                                    {index % 3 === 0 &&
-                                        <Flex>
-                                            <SudokuSquare numbers={initArray[index]} boardIndex={index}/>
-                                            <SudokuSquare numbers={initArray[index+1]} boardIndex={index}/>
-                                            <SudokuSquare numbers={initArray[index+2]} boardIndex={index}/>
+                                        <Flex key={index} >
+                                            <SudokuSquare number={block} boardIndex={index}/>
                                         </Flex>
-                                    }
-                                </div>
                             )
                         })
                         }
-                    </Flex>
-                    <Button onClick={compareBoard}>Check For Win</Button>
-                </div>
+                    </Grid>
                 :
                 <div>Loading</div>
             }
+            <Button onClick={compareBoard}>Check For Win</Button>
+            <Button onClick={confirmTurn}>Confirm Turn</Button>
         </Center>
     )
 }

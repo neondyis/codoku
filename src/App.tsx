@@ -1,15 +1,23 @@
-import { ChakraProvider } from '@chakra-ui/react';
 import React from 'react';
 import {Board} from "./components/Board";
-import {SudokuProvider} from "./context/SudokuContext";
+import { MainMenu } from './components/MainMenu';
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainMenu/>
+  },
+  {
+    path:"/play",
+    element: <Board/>
+  }
+]);
 
 function App() {
   return (
-      <ChakraProvider>
-          <SudokuProvider>
-          <Board/>
-          </SudokuProvider>
-      </ChakraProvider>
+      <RouterProvider router={router} />
   );
 }
 

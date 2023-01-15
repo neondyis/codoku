@@ -3,13 +3,31 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {sudokuStore} from "./redux/SudokuSlice";
+import {Provider} from "react-redux";
+import {ChakraProvider, extendBaseTheme} from '@chakra-ui/react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// const theme = extendBaseTheme({
+//     styles: {
+//         global: () => ({
+//             body: {
+//                 backgroundImage: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)",
+//             },
+//         })},
+// })
+
+
 root.render(
   <React.StrictMode>
-    <App />
+      <ChakraProvider>
+      <Provider store={sudokuStore}>
+              <App />
+      </Provider>
+      </ChakraProvider>
   </React.StrictMode>
 );
 
