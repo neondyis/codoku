@@ -1,0 +1,34 @@
+.sudoku-board :nth-child(n + 1) :nth-child(-n +1){
+    border: 1px solid whitesmoke;
+}
+
+.sudoku-board {
+    border: 2px solid cornflowerblue;
+}
+
+.sudoku-board :nth-child(3n) {
+    border-right: 1px solid cornflowerblue;
+}
+
+.sudoku-board :nth-child(n+19):nth-last-child(n + 55) {
+    border-bottom: 2px solid cornflowerblue;
+}
+
+.sudoku-board :nth-child(n+46):nth-last-child(n + 28) {
+    border-bottom: 2px solid cornflowerblue;
+}
+
+.sudoku-board-block > div > div > div {
+    border: none !important;
+}
+
+.sudoku-board-block > div > div {
+    border: none !important;
+}
+
+.chakra-input {
+    border: none !important;
+}
+
+
+
