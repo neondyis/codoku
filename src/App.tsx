@@ -8,7 +8,7 @@ import {useAppDispatch} from "./redux/hooks";
 import {useCookies} from "react-cookie";
 
 // @ts-ignore
-export const socket = io(process.env.REACT_APP.SOCKET_URL || `http://localhost:4000`);
+export const socket = io(process.env.REACT_APP_SOCKET_URL || `http://localhost:4000`);
 
 const router = createBrowserRouter([
   {
