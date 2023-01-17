@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {sudokuStore} from "./redux/SudokuSlice";
 import {Provider} from "react-redux";
 import {ChakraProvider, extendBaseTheme} from '@chakra-ui/react';
+import {CookiesProvider} from "react-cookie";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -25,7 +26,9 @@ root.render(
   <React.StrictMode>
       <ChakraProvider>
       <Provider store={sudokuStore}>
+          <CookiesProvider>
               <App />
+          </CookiesProvider>
       </Provider>
       </ChakraProvider>
   </React.StrictMode>

@@ -2,7 +2,7 @@ import {Box,Grid, GridItem, Input} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {modifyGameBoardBox, setNotes} from "../redux/SudokuSlice";
-import {socket} from "./MainMenu";
+import {socket} from "../App";
 
 export const SudokuSquare = (props: SudokuSquareProps) => {
     const boxNumber = props.number;

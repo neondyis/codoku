@@ -23,11 +23,9 @@ import {
 } from "../redux/SudokuSlice";
 import {useAppDispatch} from "../redux/hooks";
 import {useNavigate} from "react-router-dom";
-import io from "socket.io-client";
 import {DateTime} from "luxon";
-import {ArrowDownIcon} from "@chakra-ui/icons";
-
-export const socket = io(`http://localhost:4000`);
+import {useCookies} from "react-cookie";
+import {socket} from "../App";
 
 export const MainMenu = () => {
     const [gridSize,setGridSize] = useState(0);
@@ -37,51 +35,17 @@ export const MainMenu = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [gameList, setGamelist] = useState([]);
+    const [cookies, setCookie] = useCookies();
 
-    const [isConnected, setIsConnected] = useState(socket.connected);
 
     useEffect(() => {
-        socket.on('connect', () => {
-            setIsConnected(true);
-            socket.emit('getGameList');
-        });
-
         socket.on('gameListInfo', (data) => {
-         setGamelist(data)
+            setGamelist(data)
         });
 
-        socket.on('disconnect', () => {
-            setIsConnected(false);
-        });
-
-        socket.on('receiveGameData', (data) => {
-            dispatch(setID(data._id));
-            dispatch(modifyGameBoard(data.puzzle));
-            dispatch(setCurrentTurn(data.currentTurn));
-            dispatch(setSolutionBoard(data.solution));
-            dispatch(setStartTime(data.startTime));
-            dispatch(setNotes(data.notes));
+        socket.on('navigateToBoard', () => {
             navigate('/play')
-        })
-
-        socket.on('updateGameData', (data) => {
-            console.log("Update Came")
-            dispatch(modifyGameBoard(data.puzzle));
-            dispatch(setCurrentTurn(data.currentTurn));
-        })
-
-        socket.on('updateClientNotes', (data) => {
-            console.log(data)
-            dispatch(setNotes(data));
-        })
-
-        console.log(gameId)
-        return () => {
-            socket.off('connect');
-            socket.off('disconnect');
-            socket.off('pong');
-        };
-
+        });
     },[gameList,gameId])
 
     const sendPing = () => {
@@ -93,12 +57,14 @@ export const MainMenu = () => {
         const startTime = DateTime.now().toJSDate();
         dispatch(setUser(name));
         dispatch(setStartTime(startTime.toDateString()))
+        setCookie('user',name);
         socket.emit('initiateGame', {...sudokuBoardManager,name,startTime});
     }
 
     const joinGame = () => {
         socket.emit('joinGame', {id:gameId ,name: name})
         dispatch(setUser(name));
+        setCookie('user',name);
         navigate('/play');
     }
 
