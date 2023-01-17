@@ -21,7 +21,7 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
 
     const handleBoxChange = (e:any) => {
         const value = e.target.value;
-        if (value > 0 && value <= 9){
+        if (value >= 0 && value <= 9){
             dispatch(modifyGameBoardBox({number: +value,index: props.boardIndex}))
         }
         if(e.nativeEvent.inputType === 'deleteContentBackward'){
@@ -33,7 +33,7 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
     const handleNoteChange = (e:any, index:number) => {
         // TODO Change this to improved method possibly using Object.assign and remove repeat code
         const value = e.target.value;
-        if (value > 0 && value <= 9){
+        if (value >= 0 && value <= 9){
             const tempNotes = [...boxNotes];
             // @ts-ignore
             tempNotes[index] = {value: value, boardIndex: props.boardIndex};
