@@ -49,12 +49,8 @@ export const Board = () => {
                 }
             }
             setGameInitiated(true);
-            setInterval(() => {
-                // @ts-ignore
-                setGameTime(DateTime.now().diff(DateTime.fromISO(startTime),'seconds').toFormat("hh:mm:ss"))
-            }, 1000)
         }
-    },[gameTime])
+    },[])
 
 
     const compareBoard = () => {
@@ -71,14 +67,12 @@ export const Board = () => {
         }
     }
 
-
     return (
         <Card>
             <CardHeader>
                 <Text>Room ID - {id}</Text>
                 <Text>Your Name - {user}</Text>
                 <Text>Current Turn - {currentTurn}</Text>
-                <Text>Game Time - {gameTime}</Text>
             </CardHeader>
             <CardBody>
                 {!isWon ?
@@ -92,7 +86,7 @@ export const Board = () => {
                                 {gameBoard.map((block: number, index: number) => {
                                     return (
                                         <GridItem key={index} className='sudoku-board-block'>
-                                            <SudokuSquare number={block} boardIndex={index}/>
+                                            <SudokuSquare number={block} boardIndex={index} solutionNumber={solutionBoard[index]}/>
                                         </GridItem>
                                     )
                                 })

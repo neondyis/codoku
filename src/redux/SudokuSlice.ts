@@ -8,6 +8,7 @@ const SudokuSlice = createSlice({
         id: '',
         gameArray: [],
         solvedArray:[],
+        initArray: [],
         currentTurn: '',
         user: '',
         startTime: '00:00',
@@ -72,12 +73,18 @@ const SudokuSlice = createSlice({
                 ...state,
                 won: action.payload
             }
+        },
+        setInitArray: (state, action) => {
+            return {
+                ...state,
+                initArray: action.payload
+            }
         }
     }
 })
 
 
-export const {modifyGameBoard, setSolutionBoard,modifyGameBoardBox,setID,setUser,setCurrentTurn,setStartTime, setNotes,setWon} = SudokuSlice.actions;
+export const {modifyGameBoard, setSolutionBoard,modifyGameBoardBox,setID,setUser,setCurrentTurn,setStartTime, setNotes,setWon,setInitArray} = SudokuSlice.actions;
 
 export const sudokuStore = configureStore({
     reducer: SudokuSlice.reducer

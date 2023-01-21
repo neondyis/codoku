@@ -3,7 +3,15 @@ import {Board} from "./components/Board";
 import { MainMenu } from './components/MainMenu';
 import {createBrowserRouter, RouterProvider, useNavigate} from "react-router-dom";
 import io from "socket.io-client";
-import {modifyGameBoard, setCurrentTurn, setID, setNotes, setSolutionBoard, setStartTime} from "./redux/SudokuSlice";
+import {
+  modifyGameBoard,
+  setCurrentTurn,
+  setID,
+  setInitArray,
+  setNotes,
+  setSolutionBoard,
+  setStartTime
+} from "./redux/SudokuSlice";
 import {useAppDispatch} from "./redux/hooks";
 import {useCookies} from "react-cookie";
 
@@ -44,6 +52,7 @@ function App() {
         dispatch(setSolutionBoard(data.solution));
         dispatch(setStartTime(data.startTime));
         dispatch(setNotes(data.notes));
+        dispatch(setInitArray(data.initPuzzle))
         setCookie('gameId',data._id);
       }
     })

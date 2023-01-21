@@ -3,8 +3,9 @@ import {
     Card,
     CardBody,
     CardHeader,
-    Center,
-    Input, Select,
+    Center, FormControl,
+    FormLabel,
+    Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select,
     Tab,
     TabList,
     TabPanel, TabPanels,
@@ -28,15 +29,15 @@ import {useCookies} from "react-cookie";
 import {socket} from "../App";
 
 export const MainMenu = () => {
-    const [gridSize,setGridSize] = useState(0);
+    const [cookies, setCookie] = useCookies();
+    const [gridSize,setGridSize] = useState(3);
     const [difficulty,setDifficulty] = useState(0);
     const [gameId,setGameID] = useState('');
-    const [name, setName] = useState('');
+    const [name, setName] = useState(cookies.user ? cookies.user : '');
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [gameList, setGamelist] = useState([]);
-    const [cookies, setCookie] = useCookies();
-
+    const isError = name === '';
 
     useEffect(() => {
         socket.on('gameListInfo', (data) => {
@@ -75,26 +76,59 @@ export const MainMenu = () => {
                     Create or Join a Cudoku Room
                 </CardHeader>
                 <CardBody>
-                    <Tabs >
+                    <Tabs>
                         <TabList>
                             <Tab>Create</Tab>
                             <Tab>Join</Tab>
                         </TabList>
                         <TabPanels maxW={'50vw'}>
                             <TabPanel>
-                                <Input onChange={e => setName(e.target.value)} placeholder={'Name'}/>
-                                <Input onChange={e => setGridSize(+e.target.value)} placeholder='Grid Size (e.g 3 = 9x9)' />
-                                <Input onChange={e => setDifficulty(+e.target.value)} placeholder='Difficulty - (0.1 - 1.0)' />
-                                <Button onClick={createBoard}>Create</Button>
+                                <FormControl isRequired isInvalid={isError}>
+                                    <FormLabel>Name</FormLabel>
+                                    <Input type='text' value={name} onChange={e => setName(e.target.value)} placeholder={'Name'} isRequired/>
+                                </FormControl>
+                                <FormControl isRequired>
+                                    <FormLabel>Grid Size</FormLabel>
+                                    <NumberInput defaultValue={3}
+                                                 max={9}
+                                                 min={2}
+                                                 value={gridSize}
+                                                 onChange={(gridValue) => setGridSize(+gridValue)}
+                                                 isReadOnly={true}
+                                                 isRequired>
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper />
+                                            <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                </FormControl>
+                                <FormControl isRequired>
+                                    <FormLabel>Difficulty</FormLabel>
+                                    <NumberInput max={1.00}
+                                                 min={0.1}
+                                                 value={difficulty}
+                                                 defaultValue={0.1}
+                                                 precision={1} step={0.1}
+                                                 onChange={difficultyValue => setDifficulty(+difficultyValue)}
+                                    >
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper />
+                                            <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                </FormControl>
+                                <Button disabled={isError} onClick={createBoard}>Create</Button>
                             </TabPanel>
                             <TabPanel>
-                                <Input onChange={e => setName(e.target.value)} placeholder={'Name'}/>
+                                <Input value={name} onChange={e => setName(e.target.value)} placeholder={'Name'}/>
                                 <Select placeholder='Select a game' onChange={e => setGameID(e.target.value)}>
                                     {gameList.map((game,index) => {
                                         return <option key={index} value={game['_id']}>{game['_id']} - Current Turn - {game['currentTurn']}</option>
                                     })}
                                 </Select>
-                                <Button onClick={joinGame}>Join</Button>
+                                <Button disabled={isError} onClick={joinGame}>Join</Button>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>

@@ -1,21 +1,26 @@
 import {Box,Grid, GridItem, Input} from "@chakra-ui/react";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {modifyGameBoardBox, setNotes} from "../redux/SudokuSlice";
 import {socket} from "../App";
 
+// TODO Fix pepega code here and clean up code all over
 export const SudokuSquare = (props: SudokuSquareProps) => {
+    const dispatch = useAppDispatch();
     const boxNumber = props.number;
     const id = useAppSelector(state => state.id);
-    const [initNumber,setInitNumber] = useState(props.number === -1 ? -1 : props.number);
-    const dispatch = useAppDispatch();
+    const initNumber = useAppSelector(state => state.initArray[props.boardIndex]);
     const stateNotes = useAppSelector(state => state.notes);
     const blockStateNotes = stateNotes.find(notes => notes[0]['boardIndex'] === props.boardIndex)
     const [boxNotes,setBoxNotes] = useState(blockStateNotes !== undefined ? blockStateNotes : Array(9).fill({value: '', boardIndex: props.boardIndex}))
 
+    const numberStyle =  useRef(initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'green.500' : 'red.500');
+    const [isInit, setIsInit] = useState(false);
+
     useEffect(() => {
-        if(blockStateNotes !== undefined){
+        if(blockStateNotes !== undefined && !isInit){
             setBoxNotes(blockStateNotes);
+            setIsInit(true);
         }
     },[stateNotes]);
 
@@ -26,7 +31,11 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
         }
         if(e.nativeEvent.inputType === 'deleteContentBackward'){
             dispatch(modifyGameBoardBox({number: -1,index: props.boardIndex}))
-            setInitNumber(-1)
+        }
+        if(+value === props.solutionNumber){
+            numberStyle.current = 'green.500';
+        }else{
+            numberStyle.current = 'red.500';
         }
     }
 
@@ -48,8 +57,6 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
         }
     }
 
-    const numberStyle = initNumber !== -1 ? 'black.300' : 'red.500'
-
     return (
                         <Grid key={props.boardIndex} templateRows='repeat(3, 1fr)'
                               templateColumns='repeat(3, 1fr)'>
@@ -59,7 +66,7 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                                             {index === 4 ?
                                                 <GridItem  w='25px' h='25px'>
                                                     <Input variant='unstyled'
-                                                           textColor={numberStyle}
+                                                           textColor={numberStyle.current}
                                                            textAlign='center'
                                                            type='number'
                                                            min={1}
@@ -94,4 +101,5 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
 type SudokuSquareProps = {
     number: number;
     boardIndex:any;
+    solutionNumber: number
 }
