@@ -37,7 +37,7 @@ export const MainMenu = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [gameList, setGamelist] = useState([]);
-    const isError = name === '';
+    const isError = (name === '' && difficulty === 0);
 
     useEffect(() => {
         socket.on('gameListInfo', (data) => {

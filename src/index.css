@@ -1,7 +1,8 @@
-html , body , #root > div {
+html , body , #root {
     height: 100vh;
 }
 
 #root{
     background-color: cadetblue;
+    overflow: auto;
 }

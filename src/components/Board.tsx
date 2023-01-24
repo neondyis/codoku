@@ -69,48 +69,50 @@ export const Board = () => {
     }
 
     return (
-        <Container>
-            <br/>
-            <Flex alignItems={"center"} justify={"space-evenly"}>
-                <Tag  borderRadius='full' variant='solid' colorScheme='green' minW={'auto'}>{id}</Tag>
-                <Tag borderRadius='full' variant='solid' colorScheme={currentTurn === user ? "green" : "red" } minW={'auto'}>{user}</Tag>
-                <Tag borderRadius='full' variant='solid' colorScheme='green' minW={'auto'}>{currentTurn}'s Turn</Tag>
+        <>
+            <Flex flexDirection={"column"} alignItems={"center"} justify={"space-evenly"}>
+                <Tag  borderRadius='full' variant='solid' colorScheme='teal' minW={'auto'}>{id}</Tag>
+                <Tag borderRadius='full' variant='solid' colorScheme={currentTurn === user ? "linkedin" : "orange" } minW={'auto'}>{user}</Tag>
+                <Tag borderRadius='full' variant='solid' colorScheme='teal' minW={'auto'}>{currentTurn}'s Turn</Tag>
             </Flex>
-            <br/>
-            <Container>
-                {!isWon ?
-                    <Center h='100%' w='100%'>
-                        {gameBoard.length > 0 ?
-                            <Grid
-                                className='sudoku-board'
-                                templateRows='repeat(9, 1fr)'
-                                templateColumns='repeat(9, 1fr)'
-                            >
-                                {gameBoard.map((block: number, index: number) => {
-                                    return (
-                                        <GridItem key={index} className='sudoku-board-block'>
-                                            <SudokuSquare number={block} boardIndex={index} solutionNumber={solutionBoard[index]}/>
-                                        </GridItem>
-                                    )
-                                })
-                                }
-                            </Grid>
-                            :
-                            <div>Loading</div>
-                        }
-                    </Center>:
-                    <Center>
-                        <Text>
-                            You have won
-                        </Text>
-                    </Center>
-                }
-            </Container>
+                <div>
+
+                    {!isWon ?
+                        <Center h='100%' w='100%'>
+                            {gameBoard.length > 0 ?
+                                <Grid
+                                    className='sudoku-board'
+                                    templateRows='repeat(9, minmax(10px,1fr))'
+                                    templateColumns='repeat(9, minmax(10px,1fr))'
+                                    gridAutoRows='0.2fr'
+                                >
+                                    {gameBoard.map((block: number, index: number) => {
+                                        return (
+                                            <GridItem key={index} className='sudoku-board-block'>
+                                                <SudokuSquare number={block} boardIndex={index} solutionNumber={solutionBoard[index]}/>
+                                            </GridItem>
+                                        )
+                                    })
+                                    }
+                                </Grid>
+                                :
+                                <div>Loading</div>
+                            }
+                        </Center>:
+                        <Center>
+                            <Text>
+                                You have won
+                            </Text>
+                        </Center>
+                    }
+                <br/>
+            </div>
             <Flex alignItems={"center"} justify={"space-evenly"}>
                 <Button onClick={compareBoard}>Check For Win</Button>
                 <Button onClick={confirmTurn}>Confirm Turn</Button>
             </Flex>
-        </Container>
+        </>
+
     )
 }
 

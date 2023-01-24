@@ -47,17 +47,20 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
     }
 
     return (
-                        <Grid key={props.boardIndex} templateRows='repeat(3, 1fr)'
-                              templateColumns='repeat(3, 1fr)'>
+                        <Grid key={props.boardIndex}
+                              templateRows='repeat(3, minmax(1px,1fr))'
+                              templateColumns='repeat(3, minmax(1px,1fr))'
+                        >
                                 {boxNotes.map(({value,boardIndex},index)=> {
                                     return (
                                         <Box key={index} backgroundColor={initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'gray.100' : 'whiteAlpha.500'}>
                                             {index === 4 ?
-                                                <GridItem  w='25px' h='25px'>
+                                                <GridItem maxWidth={'25px'}>
                                                     <Input variant='unstyled'
                                                            textColor={initNumber !== -1 ? 'whiteAlpha.800': +boxNumber === +props.solutionNumber ? 'green.300' : 'red.300'}
                                                            textAlign='center'
                                                            type='number'
+                                                           fontSize='medium'
                                                            min={1}
                                                            max={9}
                                                            pattern="/^[0-9]{0,1}$/"
@@ -67,10 +70,11 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                                                     />
                                                 </GridItem>
                                                 :
-                                                <GridItem  w='25px' h='25px'>
+                                                <GridItem maxWidth={'25px'}>
                                                 <Input value={value}
                                                        variant='unstyled'
                                                        textColor={"lightgrey"}
+                                                       fontSize='small'
                                                        textAlign='center'
                                                        type='number'
                                                        min={1}

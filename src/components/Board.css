@@ -1,7 +1,3 @@
-.sudoku-board :nth-child(n + 1) :nth-child(-n +1){
-    border: 1px solid whitesmoke;
-}
-
 .sudoku-board {
     border: 2px solid whitesmoke;
 }
