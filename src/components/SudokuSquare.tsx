@@ -53,11 +53,11 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                         >
                                 {boxNotes.map(({value,boardIndex},index)=> {
                                     return (
-                                        <Box key={index} backgroundColor={initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'gray.100' : 'whiteAlpha.500'}>
+                                        <Box key={index} backgroundColor={initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'whiteAlpha.500' : 'whiteAlpha.100'}>
                                             {index === 4 ?
                                                 <GridItem maxWidth={'25px'}>
                                                     <Input variant='unstyled'
-                                                           textColor={initNumber !== -1 ? 'whiteAlpha.800': +boxNumber === +props.solutionNumber ? 'green.300' : 'red.300'}
+                                                           textColor={initNumber !== -1 ? 'whiteAlpha.800': +boxNumber === +props.solutionNumber ? 'teal.600' : 'orange.300'}
                                                            textAlign='center'
                                                            type='number'
                                                            fontSize='medium'
