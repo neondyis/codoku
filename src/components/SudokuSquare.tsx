@@ -55,7 +55,7 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                                             {index === 4 ?
                                                 <GridItem  w='25px' h='25px'>
                                                     <Input variant='unstyled'
-                                                           textColor={initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'green.500' : 'red.500'}
+                                                           textColor={initNumber !== -1 ? 'whiteAlpha.800': +boxNumber === +props.solutionNumber ? 'green.300' : 'red.300'}
                                                            textAlign='center'
                                                            type='number'
                                                            min={1}
