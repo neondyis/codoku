@@ -1,5 +1,5 @@
 import {Box,Grid, GridItem, Input} from "@chakra-ui/react";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {modifyGameBoardBox, setNotes} from "../redux/SudokuSlice";
 import {socket} from "../App";
@@ -14,15 +14,28 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
     const blockStateNotes = stateNotes.find(notes => notes[0]['boardIndex'] === props.boardIndex)
     const [boxNotes,setBoxNotes] = useState(blockStateNotes !== undefined ? blockStateNotes : Array(9).fill({value: '', boardIndex: props.boardIndex}))
 
-    const numberStyle =  useRef(initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'green.500' : 'red.500');
+    const [numberStyle,setNumberStyle] =  useState(initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'green.500' : 'red.500');
+    const [backgroundStyle,setBackgroundStyle] =  useState('white.500');
     const [isInit, setIsInit] = useState(false);
+
+    useLayoutEffect(() => {
+        if(boxNumber === props.solutionNumber && initNumber === -1){
+            setBackgroundStyle('gray.200');
+            setNumberStyle('green.500');
+        }else if (boxNumber !== props.solutionNumber && initNumber === -1){
+            setBackgroundStyle('white.500');
+            setNumberStyle('red.500');
+        }
+        console.log(boxNumber, props.solutionNumber)
+    },[boxNotes,boxNumber])
 
     useEffect(() => {
         if(blockStateNotes !== undefined && !isInit){
             setBoxNotes(blockStateNotes);
             setIsInit(true);
         }
-    },[stateNotes]);
+
+    },[stateNotes,boxNumber]);
 
     const handleBoxChange = (e:any) => {
         const value = e.target.value;
@@ -32,24 +45,11 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
         if(e.nativeEvent.inputType === 'deleteContentBackward'){
             dispatch(modifyGameBoardBox({number: -1,index: props.boardIndex}))
         }
-        if(+value === props.solutionNumber){
-            numberStyle.current = 'green.500';
-        }else{
-            numberStyle.current = 'red.500';
-        }
     }
 
     const handleNoteChange = (e:any, index:number) => {
-        // TODO Change this to improved method possibly using Object.assign and remove repeat code
         const value = e.target.value;
-        if (value >= 0 && value <= 9){
-            const tempNotes = [...boxNotes];
-            // @ts-ignore
-            tempNotes[index] = {value: value, boardIndex: props.boardIndex};
-            setBoxNotes(tempNotes);
-            socket.emit('modifyNotes', {notes: tempNotes, id: id})
-        }
-        if(e.nativeEvent.inputType === 'deleteContentBackward'){
+        if ((value >= 0 && value <= 9 ) || e.nativeEvent.inputType === 'deleteContentBackward'){
             const tempNotes = [...boxNotes];
             tempNotes[index] = {value: value, boardIndex: props.boardIndex};
             setBoxNotes(tempNotes);
@@ -62,11 +62,11 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                               templateColumns='repeat(3, 1fr)'>
                                 {boxNotes.map(({value,boardIndex},index)=> {
                                     return (
-                                        <Box key={index}>
+                                        <Box key={index} backgroundColor={backgroundStyle}>
                                             {index === 4 ?
                                                 <GridItem  w='25px' h='25px'>
                                                     <Input variant='unstyled'
-                                                           textColor={numberStyle.current}
+                                                           textColor={numberStyle}
                                                            textAlign='center'
                                                            type='number'
                                                            min={1}

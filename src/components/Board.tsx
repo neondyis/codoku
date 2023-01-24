@@ -42,6 +42,7 @@ export const Board = () => {
                 socket.emit('getGameData',id)
             }else{
                 if(cookieLoadcounter === 0){
+                    console.log('cookie hit')
                     const cookieId = cookies.gameId;
                     socket.emit('getGameData', {id : cookieId});
                     dispatch(setUser(cookies.user));

@@ -63,9 +63,11 @@ export const MainMenu = () => {
     }
 
     const joinGame = () => {
-        socket.emit('joinGame', {id:gameId ,name: name})
+        console.log('emitted')
         dispatch(setUser(name));
         setCookie('user',name);
+        setCookie('gameId',gameId);
+        socket.emit('joinGame', {id:gameId ,name: name})
         navigate('/play');
     }
 
@@ -81,7 +83,7 @@ export const MainMenu = () => {
                             <Tab>Create</Tab>
                             <Tab>Join</Tab>
                         </TabList>
-                        <TabPanels maxW={'50vw'}>
+                        <TabPanels minW={'50vw'} maxW={'50vw'}>
                             <TabPanel>
                                 <FormControl isRequired isInvalid={isError}>
                                     <FormLabel>Name</FormLabel>
@@ -119,6 +121,7 @@ export const MainMenu = () => {
                                         </NumberInputStepper>
                                     </NumberInput>
                                 </FormControl>
+                                <br/>
                                 <Button disabled={isError} onClick={createBoard}>Create</Button>
                             </TabPanel>
                             <TabPanel>
@@ -128,6 +131,7 @@ export const MainMenu = () => {
                                         return <option key={index} value={game['_id']}>{game['_id']} - Current Turn - {game['currentTurn']}</option>
                                     })}
                                 </Select>
+                                <br/>
                                 <Button disabled={isError} onClick={joinGame}>Join</Button>
                             </TabPanel>
                         </TabPanels>

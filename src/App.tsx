@@ -53,12 +53,11 @@ function App() {
         dispatch(setStartTime(data.startTime));
         dispatch(setNotes(data.notes));
         dispatch(setInitArray(data.initPuzzle))
-        setCookie('gameId',data._id);
+        console.log('gameId set', data._id)
       }
     })
 
     socket.on('updateGameData', (data) => {
-      console.log("Update Came")
       dispatch(modifyGameBoard(data.puzzle));
       dispatch(setCurrentTurn(data.currentTurn));
     })
