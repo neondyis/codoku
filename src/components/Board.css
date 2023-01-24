@@ -3,19 +3,19 @@
 }
 
 .sudoku-board {
-    border: 2px solid cornflowerblue;
+    border: 2px solid whitesmoke;
 }
 
 .sudoku-board :nth-child(3n) {
-    border-right: 1px solid cornflowerblue;
+    border-right: 1px solid whitesmoke;
 }
 
 .sudoku-board :nth-child(n+19):nth-last-child(n + 55) {
-    border-bottom: 2px solid cornflowerblue;
+    border-bottom: 2px solid whitesmoke;
 }
 
 .sudoku-board :nth-child(n+46):nth-last-child(n + 28) {
-    border-bottom: 2px solid cornflowerblue;
+    border-bottom: 2px solid whitesmoke;
 }
 
 .sudoku-board-block > div > div > div {

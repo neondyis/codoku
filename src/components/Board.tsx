@@ -5,10 +5,10 @@ import {
     CardBody,
     CardFooter,
     CardHeader,
-    Center,
+    Center, Container,
     Flex,
     Grid,
-    GridItem,
+    GridItem, Tag,
     Text
 } from "@chakra-ui/react";
 import {SudokuSquare} from "./SudokuSquare";
@@ -69,13 +69,15 @@ export const Board = () => {
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <Text>Room ID - {id}</Text>
-                <Text>Your Name - {user}</Text>
-                <Text>Current Turn - {currentTurn}</Text>
-            </CardHeader>
-            <CardBody>
+        <Container>
+            <br/>
+            <Flex alignItems={"center"} justify={"space-evenly"}>
+                <Tag  borderRadius='full' variant='solid' colorScheme='green' minW={'auto'}>{id}</Tag>
+                <Tag borderRadius='full' variant='solid' colorScheme={currentTurn === user ? "green" : "red" } minW={'auto'}>{user}</Tag>
+                <Tag borderRadius='full' variant='solid' colorScheme='green' minW={'auto'}>{currentTurn}'s Turn</Tag>
+            </Flex>
+            <br/>
+            <Container>
                 {!isWon ?
                     <Center h='100%' w='100%'>
                         {gameBoard.length > 0 ?
@@ -103,12 +105,12 @@ export const Board = () => {
                         </Text>
                     </Center>
                 }
-            </CardBody>
-            <CardFooter>
+            </Container>
+            <Flex alignItems={"center"} justify={"space-evenly"}>
                 <Button onClick={compareBoard}>Check For Win</Button>
                 <Button onClick={confirmTurn}>Confirm Turn</Button>
-            </CardFooter>
-        </Card>
+            </Flex>
+        </Container>
     )
 }
 

@@ -14,20 +14,9 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
     const blockStateNotes = stateNotes.find(notes => notes[0]['boardIndex'] === props.boardIndex)
     const [boxNotes,setBoxNotes] = useState(blockStateNotes !== undefined ? blockStateNotes : Array(9).fill({value: '', boardIndex: props.boardIndex}))
 
-    const [numberStyle,setNumberStyle] =  useState(initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'green.500' : 'red.500');
+    const [numberStyle,setNumberStyle] =  useState();
     const [backgroundStyle,setBackgroundStyle] =  useState('white.500');
     const [isInit, setIsInit] = useState(false);
-
-    useLayoutEffect(() => {
-        if(boxNumber === props.solutionNumber && initNumber === -1){
-            setBackgroundStyle('gray.200');
-            setNumberStyle('green.500');
-        }else if (boxNumber !== props.solutionNumber && initNumber === -1){
-            setBackgroundStyle('white.500');
-            setNumberStyle('red.500');
-        }
-        console.log(boxNumber, props.solutionNumber)
-    },[boxNotes,boxNumber])
 
     useEffect(() => {
         if(blockStateNotes !== undefined && !isInit){
@@ -62,11 +51,11 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                               templateColumns='repeat(3, 1fr)'>
                                 {boxNotes.map(({value,boardIndex},index)=> {
                                     return (
-                                        <Box key={index} backgroundColor={backgroundStyle}>
+                                        <Box key={index} backgroundColor={initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'gray.100' : 'whiteAlpha.500'}>
                                             {index === 4 ?
                                                 <GridItem  w='25px' h='25px'>
                                                     <Input variant='unstyled'
-                                                           textColor={numberStyle}
+                                                           textColor={initNumber !== -1 ? 'black.300': +boxNumber === +props.solutionNumber ? 'green.500' : 'red.500'}
                                                            textAlign='center'
                                                            type='number'
                                                            min={1}
