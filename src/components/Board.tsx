@@ -21,6 +21,9 @@ import {SudokuSolver} from "@algorithm.ts/sudoku";
 import './Board.css';
 import {useCookies} from "react-cookie";
 
+// TODO Add game time in and make it proper this time
+// TODO Make grid more mobile friendly
+// TODO Make competitive multiplayer
 export const Board = () => {
     const gameBoard = useAppSelector(state => state.gameArray);
     const solutionBoard = useAppSelector(state => state.solvedArray);
@@ -53,7 +56,6 @@ export const Board = () => {
         }
     },[])
 
-
     const compareBoard = () => {
         const solver = new SudokuSolver({childMatrixWidth: 3});
         const isWonCheck = solver.solve([...gameBoard],[...solutionBoard]);
@@ -76,7 +78,6 @@ export const Board = () => {
                 <Tag borderRadius='full' variant='solid' colorScheme='teal' minW={'auto'}>{currentTurn}'s Turn</Tag>
             </Flex>
                 <div>
-
                     {!isWon ?
                         <Center h='100%' w='100%'>
                             {gameBoard.length > 0 ?

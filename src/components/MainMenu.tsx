@@ -49,10 +49,6 @@ export const MainMenu = () => {
         });
     },[gameList,gameId])
 
-    const sendPing = () => {
-        socket.emit('ping', {id: gameId});
-    }
-
     const createBoard = () => {
         const sudokuBoardManager:any = new SudokuCreator({ childMatrixWidth:gridSize }).createSudoku(difficulty);
         const startTime = DateTime.now().toJSDate();
@@ -77,7 +73,7 @@ export const MainMenu = () => {
                 <CardHeader>
                     Create or Join a Cudoku Room
                 </CardHeader>
-                <CardBody>
+                <CardBody bgColor={'honeydew'} color={'mediumaquamarine'}>
                     <Tabs>
                         <TabList>
                             <Tab>Create</Tab>

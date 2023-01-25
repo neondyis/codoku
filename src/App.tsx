@@ -32,7 +32,6 @@ const router = createBrowserRouter([
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const dispatch = useAppDispatch();
-  const [cookies, setCookie] = useCookies();
 
   useEffect(() => {
     socket.on('connect', () => {
