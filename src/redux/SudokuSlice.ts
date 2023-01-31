@@ -1,25 +1,32 @@
 import {configureStore, createSlice} from "@reduxjs/toolkit";
-import {stat} from "fs";
-import {DateTime} from "luxon";
 
 const SudokuSlice = createSlice({
     name: 'sudoku',
     initialState: {
         id: '',
+        isInitialized: false,
         gameArray: [],
         solvedArray:[],
         initArray: [],
         currentTurn: '',
+        users: [],
         user: '',
-        startTime: '00:00',
+        startTime: '',
         notes: [],
-        won: false
+        won: false,
+        gameType: ''
     },
     reducers: {
         setID: (state,action) => {
             return {
                 ...state,
                 id: action.payload
+            }
+        },
+        setIsInitialized: (state,action) => {
+            return {
+                ...state,
+                isInitialized: action.payload
             }
         },
         setCurrentTurn: (state,action) => {
@@ -79,12 +86,27 @@ const SudokuSlice = createSlice({
                 ...state,
                 initArray: action.payload
             }
+        },
+        setGameType: (state, action) => {
+            return {
+                ...state,
+                gameType: action.payload
+            }
+        },
+        setUsers: (state, action) => {
+            return {
+                ...state,
+                users: action.payload
+            }
         }
     }
 })
 
 
-export const {modifyGameBoard, setSolutionBoard,modifyGameBoardBox,setID,setUser,setCurrentTurn,setStartTime, setNotes,setWon,setInitArray} = SudokuSlice.actions;
+export const {modifyGameBoard, setSolutionBoard,
+    modifyGameBoardBox,setID,setUser,setCurrentTurn,
+    setStartTime,setNotes,setWon,setInitArray,
+    setGameType,setUsers,setIsInitialized} = SudokuSlice.actions;
 
 export const sudokuStore = configureStore({
     reducer: SudokuSlice.reducer

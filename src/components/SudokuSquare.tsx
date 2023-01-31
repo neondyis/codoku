@@ -8,22 +8,22 @@ import {socket} from "../App";
 export const SudokuSquare = (props: SudokuSquareProps) => {
     const dispatch = useAppDispatch();
     const boxNumber = props.number;
+    const solutionNumber = props.solutionNumber;
     const id = useAppSelector(state => state.id);
     const initNumber = useAppSelector(state => state.initArray[props.boardIndex]);
     const stateNotes = useAppSelector(state => state.notes);
-    const blockStateNotes = stateNotes.find(notes => notes[0]['boardIndex'] === props.boardIndex)
+    const user: string = useAppSelector(state => state.user);
+    const blockStateNotes = stateNotes.find(notes => notes[0]['boardIndex'] === props.boardIndex);
     const [boxNotes,setBoxNotes] = useState(blockStateNotes !== undefined ? blockStateNotes : Array(9).fill({value: '', boardIndex: props.boardIndex}))
-
-    const [numberStyle,setNumberStyle] =  useState();
-    const [backgroundStyle,setBackgroundStyle] =  useState('white.500');
     const [isInit, setIsInit] = useState(false);
+    const isWon:boolean = useAppSelector(state => state.won);
+    const gameType = useAppSelector(state => state.gameType);
 
     useEffect(() => {
         if(blockStateNotes !== undefined && !isInit){
             setBoxNotes(blockStateNotes);
             setIsInit(true);
         }
-
     },[stateNotes,boxNumber]);
 
     const handleBoxChange = (e:any) => {
@@ -33,6 +33,9 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
         }
         if(e.nativeEvent.inputType === 'deleteContentBackward'){
             dispatch(modifyGameBoardBox({number: -1,index: props.boardIndex}))
+        }
+        if(+value === solutionNumber){
+            socket.emit('updateScore',{id,user});
         }
     }
 
@@ -63,6 +66,7 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
                                                            fontSize='medium'
                                                            min={1}
                                                            max={9}
+                                                           disabled={(boxNumber === +props.solutionNumber && initNumber === -1) || isWon}
                                                            pattern="/^[0-9]{0,1}$/"
                                                            readOnly={initNumber !== -1}
                                                            value={(boxNumber === -1 ) ? '': boxNumber}
@@ -94,5 +98,5 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
 type SudokuSquareProps = {
     number: number;
     boardIndex:any;
-    solutionNumber: number
+    solutionNumber: number;
 }
