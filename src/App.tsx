@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Cudoku} from "./components/Cudoku";
 import { MainMenu } from './components/MainMenu';
 import {createBrowserRouter, RouterProvider, useNavigate} from "react-router-dom";
@@ -38,17 +38,20 @@ const router = createBrowserRouter([
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const isInitialized = useAppSelector(state => state.isInitialized);
-  const solutionBoard: number[] = useAppSelector(state => state.solvedArray);
+  const gameListRef:any = useRef();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     socket.on('connect', () => {
       setIsConnected(true);
-      socket.emit('getGameList');
+      gameListRef.current = setInterval(() => {
+        socket.emit('getGameList');
+      },1000)
     });
 
     socket.on('disconnect', () => {
       setIsConnected(false);
+      gameListRef.current = null;
     });
 
     socket.on('updateGameData', (data) => {

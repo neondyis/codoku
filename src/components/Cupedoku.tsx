@@ -26,7 +26,7 @@ import {useEffect, useRef, useState} from "react";
 import {useCookies} from "react-cookie";
 import {CheckIcon, CloseIcon} from "@chakra-ui/icons";
 import {socket} from "../App";
-import {setIsInitialized, setStartTime, setUser, setUsers, setWon} from "../redux/SudokuSlice";
+import {modifyGameBoard, setIsInitialized, setStartTime, setUser, setUsers, setWon} from "../redux/SudokuSlice";
 import {DateTime} from "luxon";
 
 // TODO Set up timer and when timer is over 3 mins stop entry and show winner with a toast
@@ -45,6 +45,8 @@ export const Cupedoku = ({}: CupedokuProps)  => {
     // Board Variables
     const gameBoard: number[] = useAppSelector(state => state.gameArray);
     const solutionBoard: number[] = useAppSelector(state => state.solvedArray);
+    const initArray: number[] = useAppSelector(state => state.initArray);
+    const maxScore: number = initArray.filter(value => value === -1).length;
     const id: string = useAppSelector(state => state.id);
     const user: string = useAppSelector(state => state.user);
     const users: any[] = useAppSelector(state => state.users);
@@ -53,7 +55,7 @@ export const Cupedoku = ({}: CupedokuProps)  => {
     const isInitialized = useAppSelector(state => state.isInitialized);
     let cookieLoadcounter = 0;
     const [gameTime, setGameTime] = useState(null);
-    const timer = useRef(null);
+    const timer:any = useRef(null);
 
     useEffect(() => {
         if(!isInitialized){
@@ -67,11 +69,25 @@ export const Cupedoku = ({}: CupedokuProps)  => {
                 }
                 cookieLoadcounter ++;
             }
+        }else {
+            const gameBoardData = localStorage.getItem(id);
+            if(gameBoardData){
+                dispatch(modifyGameBoard(JSON.parse(gameBoardData)));
+            }
         }
+    },[id])
+
+    useEffect(() => {
         socket.on('updateUsers',(data) => {
             dispatch(setUsers(data));
         })
-
+        if(users.length > 0){
+            const currentUserScore = users.find(u => u.name === user).score;
+            if(currentUserScore >= maxScore){
+                dispatch(setWon(true))
+                clearInterval(timer.current)
+            }
+        }
     },[users])
 
     useEffect(() =>{
@@ -88,7 +104,6 @@ export const Cupedoku = ({}: CupedokuProps)  => {
     useEffect(() => {
         if(isInitialized){
             const isGameOver = DateTime.fromISO(startTime).plus({ minutes: 5 }).diff(DateTime.now()).milliseconds <= 0;
-            console.log(DateTime.fromISO(startTime).plus({ minutes: 5 }).diff(DateTime.now()).milliseconds)
             // @ts-ignore
             if(!gameTime){
                 if(isGameOver && !isWon){
@@ -125,7 +140,6 @@ export const Cupedoku = ({}: CupedokuProps)  => {
     const checkAllReady = (): boolean => {
         return !(users.filter(user => user.startStatus === true).length === users.length);
     }
-
 
     return(
         <>

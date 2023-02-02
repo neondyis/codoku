@@ -1,7 +1,7 @@
 import {Box,Grid, GridItem, Input} from "@chakra-ui/react";
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
-import {modifyGameBoardBox, setNotes} from "../redux/SudokuSlice";
+import {modifyGameBoard, modifyGameBoardBox, setNotes} from "../redux/SudokuSlice";
 import {socket} from "../App";
 
 // TODO Fix pepega code here and clean up code all over
@@ -9,7 +9,9 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
     const dispatch = useAppDispatch();
     const boxNumber = props.number;
     const solutionNumber = props.solutionNumber;
+    const boardIndex = props.boardIndex;
     const id = useAppSelector(state => state.id);
+    const gameBoard: number[] = useAppSelector(state => state.gameArray);
     const initNumber = useAppSelector(state => state.initArray[props.boardIndex]);
     const stateNotes = useAppSelector(state => state.notes);
     const user: string = useAppSelector(state => state.user);
@@ -17,7 +19,7 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
     const [boxNotes,setBoxNotes] = useState(blockStateNotes !== undefined ? blockStateNotes : Array(9).fill({value: '', boardIndex: props.boardIndex}))
     const [isInit, setIsInit] = useState(false);
     const isWon:boolean = useAppSelector(state => state.won);
-    const gameType = useAppSelector(state => state.gameType);
+    const [isScored,setIsScored] = useState(false);
 
     useEffect(() => {
         if(blockStateNotes !== undefined && !isInit){
@@ -26,17 +28,26 @@ export const SudokuSquare = (props: SudokuSquareProps) => {
         }
     },[stateNotes,boxNumber]);
 
+    useEffect(() => {
+
+    },[isScored])
+
     const handleBoxChange = (e:any) => {
         const value = e.target.value;
+        const updatedBoard = [...gameBoard];
         if (value >= 0 && value <= 9){
-            dispatch(modifyGameBoardBox({number: +value,index: props.boardIndex}))
+            updatedBoard[boardIndex] = +value;
+            dispatch(modifyGameBoard(updatedBoard))
         }
         if(e.nativeEvent.inputType === 'deleteContentBackward'){
-            dispatch(modifyGameBoardBox({number: -1,index: props.boardIndex}))
+            updatedBoard[boardIndex] = -1;
+            dispatch(modifyGameBoardBox(updatedBoard))
         }
-        if(+value === solutionNumber){
+        if(+value === solutionNumber && !isScored){
             socket.emit('updateScore',{id,user});
+            setIsScored(true);
         }
+        localStorage.setItem(id,JSON.stringify(updatedBoard));
     }
 
     const handleNoteChange = (e:any, index:number) => {
